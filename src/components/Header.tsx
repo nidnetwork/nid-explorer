@@ -279,7 +279,7 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "/",
   },
   {
-    label: "Register New",
+    label: "Register NNS",
     href: "/register",
   },
 ];

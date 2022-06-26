@@ -4,6 +4,7 @@ import {
   Stack,
   Image,
   Text,
+  Code,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -14,6 +15,11 @@ import fetch from "unfetch";
 import { useState, useEffect } from "react";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
+
+function parse(did) {
+  const parsed = (did || "").split(":");
+  return (parsed[4] || "").split("_");
+}
 
 export default function RecordDetail() {
   const router = useRouter();
@@ -27,6 +33,9 @@ export default function RecordDetail() {
   }, [nns]);
 
   if (!data) return <div>loading...</div>;
+
+  const nid = parse(data.nid);
+  console.log(data, nid);
 
   return (
     <Layout>
@@ -45,9 +54,17 @@ export default function RecordDetail() {
             <RecordField label="NID">{data?.nid || "-"}</RecordField>
             <RecordField label="Name">{data?.metadata?.name}</RecordField>
             <RecordField label="Issuer">{data?.metadata?.issuer}</RecordField>
-            <RecordField label="Serial No">
-              {data?.metadata?.serialNo}
+
+            <RecordField label="Contract Address">
+              <Code>{nid[0]}</Code>
             </RecordField>
+
+            <RecordField label="Token ID">
+              <Code>#{nid[1]}</Code>
+            </RecordField>
+
+            <RecordField label="Token Standard">ERC-721</RecordField>
+            <RecordField label="Blockchain">Ethereum</RecordField>
           </Stack>
         </Stack>
       </RecordWrapper>
@@ -59,7 +76,7 @@ function RecordField({ label, children }) {
   const color = useColorModeValue("gray.500", "gray.300");
   return (
     <Flex>
-      <Box minW="100px">
+      <Box minW="150px">
         <Text fontWeight="bold">{label}</Text>
       </Box>
       <Box flex="1" px="2">
